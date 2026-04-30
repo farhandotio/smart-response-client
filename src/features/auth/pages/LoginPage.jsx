@@ -5,7 +5,7 @@ import { useLogin } from '../hooks/useAuthActions.jsx';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { message, setMessage } = useAuth();
+  const { user, message, setMessage } = useAuth();
   const { login, loading } = useLogin();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
@@ -15,7 +15,11 @@ const LoginPage = () => {
     setMessage('');
     const success = await login({ identifier, password });
     if (success) {
-      navigate('/select-role');
+      if (user?.role) {
+        navigate('/dashboard');
+      } else {
+        navigate('/select-role');
+      }
     }
   };
 

@@ -13,36 +13,27 @@ const handleError = (error) => {
   throw new Error(message);
 };
 
-export const registerUser = async ({ username, email, password }) => {
-  try {
-    const response = await api.post('/api/auth/register', { username, email, password });
-    return response.data;
-  } catch (error) {
-    handleError(error);
-  }
-};
-
-export const verifyOtp = async ({ email, otp }) => {
-  try {
-    const response = await api.post('/api/otp/verify-otp', { email, otp });
-    return response.data;
-  } catch (error) {
-    handleError(error);
-  }
-};
-
-export const loginUser = async ({ identifier, password }) => {
-  try {
-    const response = await api.post('/api/auth/login', { identifier, password });
-    return response.data;
-  } catch (error) {
-    handleError(error);
-  }
-};
-
-export const getCurrentUser = async () => {
+export const getMe = async () => {
   try {
     const response = await api.get('/api/profile/me');
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const becomeDeveloper = async (payload) => {
+  try {
+    const response = await api.post('/api/profile/become-developer', payload);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const becomeClient = async (payload) => {
+  try {
+    const response = await api.post('/api/profile/become-client', payload);
     return response.data;
   } catch (error) {
     handleError(error);

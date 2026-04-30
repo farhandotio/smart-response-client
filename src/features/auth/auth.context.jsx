@@ -1,5 +1,6 @@
 import './styles/auth.scss';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import * as authService from './services/auth.service.jsx';
 
 const AuthContext = createContext(null);
 
@@ -17,6 +18,8 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [message, setMessage] = useState('');
   const [pendingRegister, setPendingRegisterState] = useState(getStoredPendingRegister);
+  const [isAuthReady, setIsAuthReady] = useState(false);
+  const [isAuthLoading, setIsAuthLoading] = useState(false);
 
   const setPendingRegister = (value) => {
     setPendingRegisterState(value);
@@ -41,12 +44,34 @@ export const AuthProvider = ({ children }) => {
     setMessage('');
   };
 
+  useEffect(() => {
+    const initializeAuth = async () => {
+      setIsAuthLoading(true);
+
+      try {
+        const data = await authService.getCurrentUser();
+        if (data?.user) {
+          setUser({ ...data.user, isAuthenticated: true });
+        }
+      } catch {
+        setUser(null);
+      } finally {
+        setIsAuthReady(true);
+        setIsAuthLoading(false);
+      }
+    };
+
+    initializeAuth();
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
         user,
         message,
         pendingRegister,
+        isAuthReady,
+        isAuthLoading,
         selectRole,
         logout,
         setMessage,
