@@ -22,7 +22,6 @@ const LoginPage = () => {
       }
     }
   };
-
   return (
     <div className="auth-shell">
       <div className="auth-card">
@@ -67,5 +66,4 @@ const LoginPage = () => {
     </div>
   );
 };
-
 export default LoginPage;
