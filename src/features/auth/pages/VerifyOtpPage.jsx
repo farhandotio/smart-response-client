@@ -1,8 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '../auth.context.jsx';
 import { useVerifyOtp } from '../hooks/useAuthActions.jsx';
 import { toast } from 'react-toastify';
+import { Zap, ShieldCheck, RefreshCw } from 'lucide-react';
 
 const VerifyOtpPage = () => {
   const navigate = useNavigate();
@@ -65,37 +67,33 @@ const VerifyOtpPage = () => {
 
   return (
     <div className="auth-shell">
-      <div className="auth-card">
-        <h1 className="auth-title" style={{ textAlign: 'center' }}>Verify OTP</h1>
-        <p className="auth-subtitle" style={{ textAlign: 'center' }}>
-          Enter the code sent to <span className="auth-highlight">{pendingRegister?.email}</span>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="auth-card"
+      >
+        <div className="auth-brand">
+           <Zap className="brand-icon" size={32} />
+           <span className="brand-text">SIRP AI</span>
+        </div>
+
+        <h1 className="auth-title">Verify Email</h1>
+        <p className="auth-subtitle">
+          Secure code sent to <br />
+          <strong className="auth-highlight">{pendingRegister?.email}</strong>
         </p>
 
         <form className="auth-form" onSubmit={handleSubmit}>
-          <div className="otp-container" style={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            gap: '0.6rem', 
-            margin: '2rem 0' 
-          }}>
+          <div className="otp-grid">
             {otp.map((digit, index) => (
-              <input
+              <motion.input
                 key={index}
+                whileFocus={{ scale: 1.05, borderColor: 'var(--accent)' }}
                 ref={(el) => (inputs.current[index] = el)}
                 type="text"
                 maxLength="1"
-                className="auth-input"
-                style={{ 
-                  width: '3.2rem', 
-                  height: '3.8rem', 
-                  textAlign: 'center', 
-                  fontSize: '1.4rem', 
-                  fontWeight: 'bold',
-                  padding: 0,
-                  borderRadius: '1rem',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid var(--border)'
-                }}
+                className="otp-input"
                 value={digit}
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
@@ -103,22 +101,42 @@ const VerifyOtpPage = () => {
             ))}
           </div>
 
-          <p className="auth-subtitle" style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-            Resend OTP in <span className="auth-highlight">{formatTime(timer)}</span>
-          </p>
+          <div className="otp-status">
+            {timer > 0 ? (
+              <p className="auth-subtitle">
+                Resend code in <span className="auth-highlight">{formatTime(timer)}</span>
+              </p>
+            ) : (
+              <button className="auth-link-button" type="button" style={{ fontSize: '0.9rem' }}>
+                <RefreshCw size={14} />
+                Resend Code Now
+              </button>
+            )}
+          </div>
 
-          <button type="submit" className="auth-button auth-button--primary" disabled={loading}>
-            {loading ? 'Verifying...' : 'Complete Registration'}
-          </button>
+          <motion.button 
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            type="submit" 
+            className="auth-button auth-button--primary" 
+            disabled={loading}
+          >
+            {loading ? 'Verifying...' : (
+              <>
+                Validate Security Code
+                <ShieldCheck size={18} />
+              </>
+            )}
+          </motion.button>
         </form>
 
         <div className="auth-footer">
-          Wait, I used the wrong email?{' '}
+          <span>Entered wrong email?</span>
           <button className="auth-link-button" type="button" onClick={() => navigate('/register')}>
-            Go Back
+            Change Email
           </button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

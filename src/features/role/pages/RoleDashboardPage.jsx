@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../auth/auth.context.jsx';
 import { useRoleActions } from '../hooks/useRoleActions.jsx';
 import { toast } from 'react-toastify';
 import Sidebar from '../components/Sidebar';
 import TopNav from '../components/TopNav';
+import { Activity, AlertTriangle, Cpu, Globe, Users, Settings, LayoutDashboard } from 'lucide-react';
 
 const RoleDashboardPage = () => {
   const navigate = useNavigate();
@@ -61,25 +63,53 @@ const RoleDashboardPage = () => {
   };
 
   const statusCards = useMemo(() => [
-    { title: 'System Health', value: '99.9%', note: 'Status: Nominal', status: 'good' },
-    { title: 'Active Incidents', value: '3', note: 'Critical: 1', status: 'warning' },
-    { title: 'Log Ingestion', value: 'Active', note: 'Throughput: 1.2GB/s', status: 'good' },
+    { title: 'System Health', value: '99.9%', note: 'Status: Nominal', status: 'good', icon: <Activity className="w-5 h-5" /> },
+    { title: 'Active Incidents', value: '3', note: 'Critical: 1', status: 'warning', icon: <AlertTriangle className="w-5 h-5" /> },
+    { title: 'Log Ingestion', value: 'Active', note: 'Throughput: 1.2GB/s', status: 'good', icon: <Cpu className="w-5 h-5" /> },
   ], []);
 
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.5, staggerChildren: 0.1 }
+    }
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
   const renderOverview = () => (
-    <>
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       <div className="dashboard-grid dashboard-status-grid">
         {statusCards.map((item) => (
-          <div key={item.title} className={`dashboard-card dashboard-status-card dashboard-status--${item.status}`}>
-            <p className="dashboard-card-title">{item.title}</p>
-            <strong style={{ fontSize: '1.8rem', color: '#fff', display: 'block', margin: '0.5rem 0' }}>{item.value}</strong>
+          <motion.div 
+            key={item.title} 
+            variants={cardVariants}
+            whileHover={{ scale: 1.02, translateY: -5 }}
+            className={`dashboard-card dashboard-status-card dashboard-status--${item.status}`}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <p className="dashboard-card-title">{item.title}</p>
+              <span className={`status-icon status-icon--${item.status}`}>
+                {item.icon}
+              </span>
+            </div>
+            <strong className="status-value-text">{item.value}</strong>
             <p className="dashboard-card-text">{item.note}</p>
-          </div>
+          </motion.div>
         ))}
       </div>
 
       <div className="dashboard-row dashboard-bottom-row" style={{ marginTop: '2.5rem' }}>
-        <section className="dashboard-card dashboard-incident-card">
+        <motion.section variants={cardVariants} className="dashboard-card dashboard-incident-card">
           <div className="dashboard-section-header">
             <h2 className="dashboard-section-title">Recent Alerts</h2>
             <p className="dashboard-section-text">Live feed of infrastructure anomalies.</p>
@@ -100,9 +130,9 @@ const RoleDashboardPage = () => {
                 </div>
               </div>
           </div>
-        </section>
+        </motion.section>
 
-        <section className="dashboard-card dashboard-infra-card">
+        <motion.section variants={cardVariants} className="dashboard-card dashboard-infra-card">
           <div className="dashboard-section-header">
             <h2 className="dashboard-section-title">Infrastructure Topology</h2>
             <p className="dashboard-section-text">Live system health map.</p>
@@ -112,9 +142,9 @@ const RoleDashboardPage = () => {
             <div className="topology-value">24 / 24</div>
             <div className="topology-location">Global Cluster — AWS/Azure</div>
           </div>
-        </section>
+        </motion.section>
       </div>
-    </>
+    </motion.div>
   );
 
   const renderTeam = () => (
