@@ -26,11 +26,7 @@ const RoleSelectionPage = () => {
       const data = await authService.updateRole(roleKey);
       if (data?.success) {
         setUser({ ...user, role: roleKey });
-        if (roleKey === 'engineer') {
-          navigate('/dashboard');
-        } else {
-          navigate(`/role/create/${roleKey}`);
-        }
+        navigate(`/role/create/${roleKey}`);
       }
     } catch (error) {
       toast.error(error.message);
