@@ -2,21 +2,23 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../auth/auth.context.jsx';
 import { useRoleActions } from '../hooks/useRoleActions.jsx';
+import { toast } from 'react-toastify';
 
 const RoleCreationPage = () => {
   const navigate = useNavigate();
   const { role } = useParams();
-  const { user, message, setMessage } = useAuth();
-  const { becomeDeveloper, becomeClient, loading } = useRoleActions();
+  const { user } = useAuth();
+  const { createCompany, createEngineerProfile, loading } = useRoleActions();
 
+  // Company Admin State
   const [companyName, setCompanyName] = useState('');
   const [companyDesc, setCompanyDesc] = useState('');
-  const [experienceYears, setExperienceYears] = useState('');
-  const [techStack, setTechStack] = useState('');
-  const [rateMin, setRateMin] = useState('');
-  const [rateMax, setRateMax] = useState('');
+  const [logSources, setLogSources] = useState([{ sourceName: '', logUrl: '', serviceType: 'backend' }]);
+
+  // Engineer State
+  const [seniority, setSeniority] = useState('mid');
+  const [expertise, setExpertise] = useState('');
   const [bio, setBio] = useState('');
-  const [portfolioLink, setPortfolioLink] = useState('');
 
   useEffect(() => {
     if (!user?.isAuthenticated) {
@@ -24,112 +26,148 @@ const RoleCreationPage = () => {
       return;
     }
 
-    if (user?.role) {
-      navigate('/dashboard');
+    if (role === 'engineer') {
+      navigate('/dashboard', { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, navigate, role]);
 
-  useEffect(() => {
-    setMessage('');
-  }, [role, setMessage]);
+  const addLogSource = () => {
+    setLogSources([...logSources, { sourceName: '', logUrl: '', serviceType: 'backend' }]);
+  };
+
+  const handleLogSourceChange = (index, field, value) => {
+    const updated = [...logSources];
+    updated[index][field] = value;
+    setLogSources(updated);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setMessage('');
 
-    if (role === 'developer') {
-      const techStackArray = techStack
-        .split(',')
-        .map((skill) => skill.trim())
-        .filter(Boolean);
-
-      if (!experienceYears || techStackArray.length === 0 || !rateMin || !rateMax || !bio) {
-        setMessage('All developer fields are required, and at least one skill must be provided.');
+    if (role === 'company_admin') {
+      if (!companyName || !companyDesc) {
+        toast.error('Company name and description are required.');
         return;
       }
-
-      const success = await becomeDeveloper({
-        experienceYears: Number(experienceYears),
-        techStack: techStackArray,
-        rateMin: Number(rateMin),
-        rateMax: Number(rateMax),
-        bio,
-        portfolioLink,
+      
+      const success = await createCompany({ 
+        name: companyName, 
+        description: companyDesc, 
+        logSources: logSources.filter(s => s.sourceName && s.logUrl) 
       });
       if (success) navigate('/dashboard');
-      return;
-    }
-
-    if (role === 'client') {
-      if (!companyName || !companyDesc) {
-        setMessage('Company name and description are required.');
+    } else if (role === 'engineer') {
+      const expertiseArray = expertise.split(',').map(s => s.trim()).filter(Boolean);
+      
+      if (expertiseArray.length === 0) {
+        toast.error('Please add at least one expertise (e.g. Node.js)');
         return;
       }
-      const success = await becomeClient({ companyName, companyDesc });
-      if (success) navigate('/dashboard');
-      return;
-    }
 
-    navigate('/select-role');
+      if (bio && bio.length < 10) {
+        toast.error('Bio must be at least 10 characters long');
+        return;
+      }
+
+      const success = await createEngineerProfile({ seniority, expertise: expertiseArray, bio });
+      if (success) navigate('/dashboard');
+    }
   };
 
-  const roleLabel = role === 'developer' ? 'Developer' : 'Client';
-  const title = role === 'developer' ? 'Create Developer Profile' : 'Create Client Profile';
+  const isCompanyAdmin = role === 'company_admin';
+  const title = isCompanyAdmin ? 'Register Your Company' : 'Complete Your Engineer Profile';
 
   return (
     <div className="auth-shell">
       <div className="auth-card auth-card--wide">
         <h1 className="auth-title">{title}</h1>
         <p className="auth-subtitle">
-          {role === 'developer'
-            ? 'Tell us more about your skills and the type of work you take on.'
-            : 'Provide a short company description to start posting work requests.'}
+          {isCompanyAdmin 
+            ? 'Set up your workspace to start monitoring incidents and logs.' 
+            : 'Help your team know your expertise and availability.'}
         </p>
-        {message && <div className="auth-output">{message}</div>}
 
         <form className="auth-form" onSubmit={handleSubmit}>
-          {role === 'developer' ? (
+          {isCompanyAdmin ? (
             <>
               <label className="auth-field">
-                Years of Experience
+                Company Name
                 <input
-                  type="number"
                   className="auth-input"
-                  value={experienceYears}
-                  onChange={(e) => setExperienceYears(e.target.value)}
-                  placeholder="e.g. 3"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                  placeholder="e.g. Acme Corp"
+                  required
                 />
               </label>
 
               <label className="auth-field">
-                Tech Stack
-                <input
+                Description
+                <textarea
                   className="auth-input"
-                  value={techStack}
-                  onChange={(e) => setTechStack(e.target.value)}
-                  placeholder="e.g. React, Node, MongoDB"
+                  value={companyDesc}
+                  onChange={(e) => setCompanyDesc(e.target.value)}
+                  placeholder="Describe your company"
                 />
               </label>
 
+              <div className="log-sources-section">
+                <h3 style={{ margin: '1rem 0', color: '#fff' }}>Log Sources</h3>
+                {logSources.map((source, index) => (
+                  <div key={index} className="log-source-row" style={{ marginBottom: '1rem', padding: '1rem', background: '#1a1a1a', borderRadius: '8px' }}>
+                    <input
+                      className="auth-input"
+                      value={source.sourceName}
+                      onChange={(e) => handleLogSourceChange(index, 'sourceName', e.target.value)}
+                      placeholder="Source Name (e.g. API Server)"
+                      style={{ marginBottom: '0.5rem' }}
+                    />
+                    <input
+                      className="auth-input"
+                      value={source.logUrl}
+                      onChange={(e) => handleLogSourceChange(index, 'logUrl', e.target.value)}
+                      placeholder="Log URL (e.g. s3://logs/api)"
+                      style={{ marginBottom: '0.5rem' }}
+                    />
+                    <select
+                      className="auth-input"
+                      value={source.serviceType}
+                      onChange={(e) => handleLogSourceChange(index, 'serviceType', e.target.value)}
+                    >
+                      <option value="frontend">Frontend</option>
+                      <option value="backend">Backend</option>
+                      <option value="database">Database</option>
+                    </select>
+                  </div>
+                ))}
+                <button type="button" onClick={addLogSource} className="auth-link-button">
+                  + Add Another Source
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
               <label className="auth-field">
-                Minimum Rate
-                <input
-                  type="number"
+                Seniority
+                <select
                   className="auth-input"
-                  value={rateMin}
-                  onChange={(e) => setRateMin(e.target.value)}
-                  placeholder="e.g. 30"
-                />
+                  value={seniority}
+                  onChange={(e) => setSeniority(e.target.value)}
+                >
+                  <option value="junior">Junior</option>
+                  <option value="mid">Mid</option>
+                  <option value="senior">Senior</option>
+                  <option value="lead">Lead</option>
+                </select>
               </label>
 
               <label className="auth-field">
-                Maximum Rate
+                Expertise (comma separated)
                 <input
-                  type="number"
                   className="auth-input"
-                  value={rateMax}
-                  onChange={(e) => setRateMax(e.target.value)}
-                  placeholder="e.g. 80"
+                  value={expertise}
+                  onChange={(e) => setExpertise(e.target.value)}
+                  placeholder="e.g. Node.js, AWS, Kubernetes"
                 />
               </label>
 
@@ -139,54 +177,16 @@ const RoleCreationPage = () => {
                   className="auth-input"
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
-                  placeholder="Describe your expertise and the projects you love."
-                />
-              </label>
-
-              <label className="auth-field">
-                Portfolio Link
-                <input
-                  className="auth-input"
-                  value={portfolioLink}
-                  onChange={(e) => setPortfolioLink(e.target.value)}
-                  placeholder="Optional portfolio URL"
-                />
-              </label>
-            </>
-          ) : (
-            <>
-              <label className="auth-field">
-                Company Name
-                <input
-                  className="auth-input"
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
-                  placeholder="Enter your company name"
-                />
-              </label>
-
-              <label className="auth-field">
-                Company Description
-                <textarea
-                  className="auth-input"
-                  value={companyDesc}
-                  onChange={(e) => setCompanyDesc(e.target.value)}
-                  placeholder="Describe your company and the work you need done."
+                  placeholder="Tell us about yourself"
                 />
               </label>
             </>
           )}
 
-          <button type="submit" className="auth-button auth-button--primary" disabled={loading}>
-            {loading ? 'Saving...' : `Continue as ${roleLabel}`}
+          <button type="submit" className="auth-button auth-button--primary" disabled={loading} style={{ marginTop: '2rem' }}>
+            {loading ? 'Processing...' : 'Complete Setup'}
           </button>
         </form>
-
-        <div className="auth-footer">
-          <button type="button" className="auth-link-button" onClick={() => navigate('/select-role')}>
-            Back to role selection
-          </button>
-        </div>
       </div>
     </div>
   );

@@ -1,4 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider, useAuth } from './features/auth/auth.context.jsx';
 import LoginPage from './features/auth/pages/LoginPage.jsx';
 import RegisterPage from './features/auth/pages/RegisterPage.jsx';
@@ -7,6 +9,7 @@ import RoleSelectionPage from './features/role/pages/RoleSelectionPage.jsx';
 import RoleCreationPage from './features/role/pages/RoleCreationPage.jsx';
 import RoleDashboardPage from './features/role/pages/RoleDashboardPage.jsx';
 import ProfileOverviewPage from './features/role/pages/ProfileOverviewPage.jsx';
+import LandingPage from './features/landing/LandingPage.jsx';
 
 const RequireAuth = ({ children }) => {
   const { user, isAuthReady } = useAuth();
@@ -21,7 +24,7 @@ const RequireAuth = ({ children }) => {
 const AuthApp = () => (
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/verify-otp" element={<VerifyOtpPage />} />
@@ -65,6 +68,18 @@ const AuthApp = () => (
 const App = () => (
   <AuthProvider>
     <AuthApp />
+    <ToastContainer 
+      position="top-right"
+      autoClose={3000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="dark"
+    />
   </AuthProvider>
 );
 

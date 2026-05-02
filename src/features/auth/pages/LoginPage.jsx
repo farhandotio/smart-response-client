@@ -13,9 +13,9 @@ const LoginPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setMessage('');
-    const success = await login({ identifier, password });
-    if (success) {
-      if (user?.role) {
+    const data = await login({ identifier, password });
+    if (data?.user) {
+      if (data.user.role) {
         navigate('/dashboard');
       } else {
         navigate('/select-role');
@@ -27,7 +27,6 @@ const LoginPage = () => {
       <div className="auth-card">
         <h1 className="auth-title">Login</h1>
         <p className="auth-subtitle">Enter your username, email, and password to continue.</p>
-        {message && <div className="auth-output auth-output--error">{message}</div>}
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <label className="auth-field">

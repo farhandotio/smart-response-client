@@ -24,17 +24,17 @@ const ProfileOverviewPage = () => {
   }, [loadMe, user?.isAuthenticated]);
 
   const sections = useMemo(() => {
-    if (user?.role === 'developer') {
+    if (user?.role === 'engineer') {
       return [
-        { label: 'Experience', value: `${profile?.experienceYears || 'N/A'} years` },
-        { label: 'Tech Stack', value: profile?.techStack?.join(', ') || 'N/A' },
-        { label: 'Rate Range', value: `$${profile?.rateMin || 'N/A'} - $${profile?.rateMax || 'N/A'}` },
+        { label: 'Seniority', value: profile?.seniority || 'N/A' },
+        { label: 'Expertise', value: profile?.expertise?.join(', ') || 'N/A' },
+        { label: 'Availability', value: profile?.availabilityStatus || 'Offline' },
       ];
     }
 
     return [
-      { label: 'Company', value: profile?.companyName || 'N/A' },
-      { label: 'Description', value: profile?.companyDesc || 'N/A' },
+      { label: 'Organization', value: profile?.name || profile?.companyName || 'N/A' },
+      { label: 'Subscription', value: profile?.subscriptionPlan || 'Free' },
     ];
   }, [profile, user?.role]);
 
@@ -43,12 +43,12 @@ const ProfileOverviewPage = () => {
       <div className="dashboard-panel dashboard-panel--profile">
         <div className="dashboard-head dashboard-head--compact">
           <div>
-            <p className="dashboard-label">Profile overview</p>
-            <h1 className="dashboard-title">{user?.username || 'Profile'}</h1>
-            <p className="dashboard-subtitle">Manage your public details and role information.</p>
+            <p className="dashboard-label">User profile</p>
+            <h1 className="dashboard-title">{user?.username}</h1>
+            <p className="dashboard-subtitle">Manage your role: {user?.role}</p>
           </div>
           <button type="button" className="secondary-button" onClick={() => navigate('/dashboard')}>
-            Back to overview
+            Back to Dashboard
           </button>
         </div>
 
@@ -62,16 +62,16 @@ const ProfileOverviewPage = () => {
                 <strong>{item.value}</strong>
               </div>
             ))}
-            {user?.role === 'developer' && (
+            {user?.role === 'engineer' && (
               <div className="dashboard-card dashboard-card--wide dashboard-card--accent">
                 <p className="dashboard-card-title">Bio</p>
                 <p>{profile?.bio || 'No bio added yet.'}</p>
               </div>
             )}
-            {user?.role === 'developer' && (
+            {user?.role === 'company_admin' && (
               <div className="dashboard-card dashboard-card--wide dashboard-card--accent">
-                <p className="dashboard-card-title">Portfolio Link</p>
-                <p>{profile?.portfolioLink || 'Not provided'}</p>
+                <p className="dashboard-card-title">Description</p>
+                <p>{profile?.description || profile?.companyDesc || 'No description provided.'}</p>
               </div>
             )}
           </div>

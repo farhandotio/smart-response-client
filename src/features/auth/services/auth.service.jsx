@@ -48,3 +48,12 @@ export const getCurrentUser = async () => {
     handleError(error);
   }
 };
+
+export const updateRole = async (role) => {
+  try {
+    const response = await api.post('/api/auth/update-role', { role });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
