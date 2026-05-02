@@ -10,7 +10,7 @@ import RoleCreationPage from './features/role/pages/RoleCreationPage.jsx';
 import RoleDashboardPage from './features/role/pages/RoleDashboardPage.jsx';
 import ProfileOverviewPage from './features/role/pages/ProfileOverviewPage.jsx';
 import LandingPage from './features/landing/LandingPage.jsx';
-import Docs from '../smart-docs/src/Pages/Docs.jsx';
+import Docs from './features/Pages/Docs.jsx';
 import PricingPage from './features/landing/pages/PricingPage.jsx';
 
 const RequireAuth = ({ children }) => {
