@@ -1,30 +1,41 @@
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/auth.context.jsx';
+import * as authService from '../../auth/services/auth.service.jsx';
 import RoleCard from '../components/RoleCard.jsx';
+import { toast } from 'react-toastify';
 
 const roles = [
   {
-    key: 'developer',
-    label: 'Developer',
-    description: 'Build software, accept client projects, and scale your tech profile.',
+    key: 'company_admin',
+    label: 'Company Admin (Leader)',
+    description: 'Register your company, manage infrastructure logs, and invite your engineering team.',
   },
   {
-    key: 'client',
-    label: 'Client',
-    description: 'Post work requests, review proposals, and manage hiring.',
+    key: 'engineer',
+    label: 'Engineer',
+    description: 'Monitor incidents, analyze logs, and collaborate on real-time resolution.',
   },
 ];
 
 const RoleSelectionPage = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
 
-  useEffect(() => {
-    if (user?.role) {
-      navigate('/dashboard');
+  const handleRoleSelect = async (roleKey) => {
+    try {
+      const data = await authService.updateRole(roleKey);
+      if (data?.success) {
+        setUser({ ...user, role: roleKey });
+        if (roleKey === 'engineer') {
+          navigate('/dashboard');
+        } else {
+          navigate(`/role/create/${roleKey}`);
+        }
+      }
+    } catch (error) {
+      toast.error(error.message);
     }
-  }, [user, navigate]);
+  };
 
   return (
     <div className="role-shell">
@@ -44,7 +55,7 @@ const RoleSelectionPage = () => {
               key={role.key}
               title={role.label}
               description={role.description}
-              onClick={() => navigate(`/role/create/${role.key}`)}
+              onClick={() => handleRoleSelect(role.key)}
             />
           ))}
         </div>

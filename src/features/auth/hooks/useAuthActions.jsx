@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 import { useAuth } from '../auth.context.jsx';
 import * as authService from '../services/auth.service.jsx';
 
@@ -8,7 +9,7 @@ export const useRegister = () => {
 
   const register = async ({ username, email, password }) => {
     if (!username || !email || !password) {
-      setMessage('All fields are required for registration.');
+      toast.error('All fields are required for registration.');
       return false;
     }
 
@@ -18,10 +19,10 @@ export const useRegister = () => {
     try {
       const data = await authService.registerUser({ username, email, password });
       setPendingRegister({ username, email, password });
-      setMessage(data.message || 'OTP sent. Check your email.');
+      toast.success(data.message || 'OTP sent. Check your email.');
       return true;
     } catch (error) {
-      setMessage(error.message);
+      toast.error(error.message);
       return false;
     } finally {
       setLoading(false);
@@ -37,12 +38,12 @@ export const useVerifyOtp = () => {
 
   const verifyOtp = async (otp) => {
     if (!pendingRegister?.email) {
-      setMessage('Registration data missing. Please register again.');
+      toast.error('Registration data missing. Please register again.');
       return false;
     }
 
     if (!otp) {
-      setMessage('Please enter the OTP sent to your email.');
+      toast.error('Please enter the OTP sent to your email.');
       return false;
     }
 
@@ -50,7 +51,10 @@ export const useVerifyOtp = () => {
     setMessage('');
 
     try {
-      const data = await authService.verifyOtp({ email: pendingRegister.email, otp });
+      const data = await authService.verifyOtp({ 
+        email: pendingRegister.email, 
+        otp 
+      });
       setUser({
         username: data.user.username,
         email: data.user.email,
@@ -58,10 +62,10 @@ export const useVerifyOtp = () => {
         isAuthenticated: true,
       });
       setPendingRegister(null);
-      setMessage(data.message || 'Registration complete. Choose a role.');
+      toast.success(data.message || 'Registration complete. Choose a role.');
       return true;
     } catch (error) {
-      setMessage(error.message);
+      toast.error(error.message);
       return false;
     } finally {
       setLoading(false);
@@ -77,7 +81,7 @@ export const useLogin = () => {
 
   const login = async ({ identifier, password }) => {
     if (!identifier || !password) {
-      setMessage('Please enter username/email and password.');
+      toast.error('Please enter username/email and password.');
       return false;
     }
 
@@ -92,10 +96,11 @@ export const useLogin = () => {
         role: data.user.role || null,
         isAuthenticated: true,
       });
-      return true;
+      toast.success('Login successful!');
+      return data;
     } catch (error) {
-      setMessage(error.message);
-      return false;
+      toast.error(error.message);
+      return null;
     } finally {
       setLoading(false);
     }
