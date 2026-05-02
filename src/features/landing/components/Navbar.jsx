@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { FiShield, FiMenu } from 'react-icons/fi';
 
@@ -16,6 +15,7 @@ const Navbar = () => {
           <a href="#features">Features</a>
           <a href="#resources">Resources</a>
           <Link to="/pricing">Pricing</Link>
+          <Link to="/docs">Docs</Link>
         </div>
 
         <div className="nav-actions">
