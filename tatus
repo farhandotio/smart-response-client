@@ -1,0 +1,25 @@
+[33m67d3993[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mnew-sandeep[m[33m, [m[1;31morigin/new-sandeep[m[33m)[m HEAD@{0}: checkout: moving from main to new-sandeep
+[33m4b87cc9[m[33m ([m[1;32mmain[m[33m)[m HEAD@{1}: checkout: moving from sandeep to main
+[33mc9a0d9d[m[33m ([m[1;31morigin/sandeep[m[33m, [m[1;32msandeep[m[33m)[m HEAD@{2}: checkout: moving from 67d39933590538d648da8e92f80c3d6c0acada69 to sandeep
+[33m67d3993[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mnew-sandeep[m[33m, [m[1;31morigin/new-sandeep[m[33m)[m HEAD@{3}: checkout: moving from main to 67d39933590538d648da8e92f80c3d6c0acada69
+[33m4b87cc9[m[33m ([m[1;32mmain[m[33m)[m HEAD@{4}: checkout: moving from new-sandeep to main
+[33m67d3993[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mnew-sandeep[m[33m, [m[1;31morigin/new-sandeep[m[33m)[m HEAD@{5}: checkout: moving from new-sandeep to new-sandeep
+[33m67d3993[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mnew-sandeep[m[33m, [m[1;31morigin/new-sandeep[m[33m)[m HEAD@{6}: checkout: moving from d7dcd90c81dd8173a99f3829dd43b7ed4a648f6f to new-sandeep
+[33md7dcd90[m HEAD@{7}: pull origin main: Merge made by the 'ort' strategy.
+[33m74c0c9d[m HEAD@{8}: commit: UI implements part done
+[33m67d3993[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mnew-sandeep[m[33m, [m[1;31morigin/new-sandeep[m[33m)[m HEAD@{9}: checkout: moving from new-sandeep to 67d39933590538d648da8e92f80c3d6c0acada69
+[33m67d3993[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mnew-sandeep[m[33m, [m[1;31morigin/new-sandeep[m[33m)[m HEAD@{10}: checkout: moving from new-sandeep to new-sandeep
+[33m67d3993[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mnew-sandeep[m[33m, [m[1;31morigin/new-sandeep[m[33m)[m HEAD@{11}: commit: all part done
+[33mf707142[m HEAD@{12}: commit: text part added
+[33ma4b8657[m HEAD@{13}: checkout: moving from a4b86571c4038952b92c83c789a21c98a19ebaac to new-sandeep
+[33ma4b8657[m HEAD@{14}: checkout: moving from 4422ded85506813d6b058318eb5a52ed3b75d267 to a4b8657
+[33m4422ded[m HEAD@{15}: commit: auth part changes done
+[33ma4b8657[m HEAD@{16}: checkout: moving from sandeep to a4b8657
+[33mc9a0d9d[m[33m ([m[1;31morigin/sandeep[m[33m, [m[1;32msandeep[m[33m)[m HEAD@{17}: pull --tags origin sandeep: Fast-forward
+[33ma4b8657[m HEAD@{18}: reset: moving to HEAD~1
+[33mc9a0d9d[m[33m ([m[1;31morigin/sandeep[m[33m, [m[1;32msandeep[m[33m)[m HEAD@{19}: commit: remove unused authentication context and related components
+[33ma4b8657[m HEAD@{20}: commit: auth part done
+[33m7e2559d[m HEAD@{21}: commit: register part done
+[33m0970f96[m[33m ([m[1;31morigin/dev[m[33m)[m HEAD@{22}: pull origin dev: Fast-forward
+[33m4b87cc9[m[33m ([m[1;32mmain[m[33m)[m HEAD@{23}: checkout: moving from main to sandeep
+[33m4b87cc9[m[33m ([m[1;32mmain[m[33m)[m HEAD@{24}: clone: from https://github.com/farhandotio/smart-response-client.git
