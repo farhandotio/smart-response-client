@@ -22,18 +22,58 @@ export const getMe = async () => {
   }
 };
 
-export const becomeDeveloper = async (payload) => {
+export const createCompany = async (formData) => {
   try {
-    const response = await api.post('/api/profile/become-developer', payload);
+    const response = await api.post('/api/company/create', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
     return response.data;
   } catch (error) {
     handleError(error);
   }
 };
 
-export const becomeClient = async (payload) => {
+export const setupEngineerProfile = async (formData) => {
   try {
-    const response = await api.post('/api/profile/become-client', payload);
+    const response = await api.post('/api/profile/setup-engineer', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const inviteEngineer = async (email) => {
+  try {
+    const response = await api.post('/api/company/invite', { email });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const getWorkspaceData = async () => {
+  try {
+    const response = await api.get('/api/company/members');
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const getInvitations = async () => {
+  try {
+    const response = await api.get('/api/company/invitations');
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const acceptInvitation = async (inviteId) => {
+  try {
+    const response = await api.post('/api/company/accept-invitation', { inviteId });
     return response.data;
   } catch (error) {
     handleError(error);
