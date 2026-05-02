@@ -5,8 +5,9 @@ import { useRegister } from '../hooks/useAuthActions.jsx';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
-  const { message, setMessage } = useAuth();
+  const { setMessage } = useAuth();
   const { register, loading } = useRegister();
+  
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,7 +24,6 @@ const RegisterPage = () => {
       <div className="auth-card auth-card--wide">
         <h1 className="auth-title">Register</h1>
         <p className="auth-subtitle">Create your account and choose your role next.</p>
-        {message && <div className="auth-output">{message}</div>}
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <label className="auth-field">
