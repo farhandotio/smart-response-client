@@ -10,6 +10,7 @@ import RoleCreationPage from './features/role/pages/RoleCreationPage.jsx';
 import RoleDashboardPage from './features/role/pages/RoleDashboardPage.jsx';
 import ProfileOverviewPage from './features/role/pages/ProfileOverviewPage.jsx';
 import LandingPage from './features/landing/LandingPage.jsx';
+import PricingPage from './features/landing/pages/PricingPage.jsx';
 
 const RequireAuth = ({ children }) => {
   const { user, isAuthReady } = useAuth();
@@ -60,6 +61,7 @@ const AuthApp = () => (
           </RequireAuth>
         }
       />
+      <Route path="/pricing" element={<PricingPage />} />
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   </BrowserRouter>

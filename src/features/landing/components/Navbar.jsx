@@ -15,7 +15,7 @@ const Navbar = () => {
           <a href="#product">Product</a>
           <a href="#features">Features</a>
           <a href="#resources">Resources</a>
-          <a href="#pricing">Pricing</a>
+          <Link to="/pricing">Pricing</Link>
         </div>
 
         <div className="nav-actions">

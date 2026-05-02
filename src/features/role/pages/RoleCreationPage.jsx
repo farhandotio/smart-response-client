@@ -25,11 +25,7 @@ const RoleCreationPage = () => {
       navigate('/login');
       return;
     }
-
-    if (role === 'engineer') {
-      navigate('/dashboard', { replace: true });
-    }
-  }, [user, navigate, role]);
+  }, [user, navigate]);
 
   const addLogSource = () => {
     setLogSources([...logSources, { sourceName: '', logUrl: '', serviceType: 'backend' }]);
