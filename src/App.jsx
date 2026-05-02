@@ -10,6 +10,7 @@ import RoleCreationPage from './features/role/pages/RoleCreationPage.jsx';
 import RoleDashboardPage from './features/role/pages/RoleDashboardPage.jsx';
 import ProfileOverviewPage from './features/role/pages/ProfileOverviewPage.jsx';
 import LandingPage from './features/landing/LandingPage.jsx';
+import Docs from '../smart-docs/src/Pages/Docs.jsx';
 
 const RequireAuth = ({ children }) => {
   const { user, isAuthReady } = useAuth();
@@ -28,6 +29,7 @@ const AuthApp = () => (
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/verify-otp" element={<VerifyOtpPage />} />
+      <Route path="/docs" element={<Docs />} />
       <Route
         path="/select-role"
         element={
