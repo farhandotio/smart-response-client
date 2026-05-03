@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '../auth.context.jsx';
 import { useLogin } from '../hooks/useAuthActions.jsx';
+import { User, Lock, ArrowRight, Zap } from 'lucide-react';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { user, message, setMessage } = useAuth();
+  const { setMessage } = useAuth();
   const { login, loading } = useLogin();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
@@ -22,47 +24,78 @@ const LoginPage = () => {
       }
     }
   };
+
   return (
     <div className="auth-shell">
-      <div className="auth-card">
-        <h1 className="auth-title">Login</h1>
-        <p className="auth-subtitle">Enter your username, email, and password to continue.</p>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="auth-card"
+      >
+        <div className="auth-brand">
+           <Zap className="brand-icon" size={32} />
+           <span className="brand-text">SIRP AI</span>
+        </div>
+
+        <h1 className="auth-title">Welcome Back</h1>
+        <p className="auth-subtitle">Login to access your command center</p>
 
         <form className="auth-form" onSubmit={handleSubmit}>
-          <label className="auth-field">
-            Username or Email
-            <input
-              className="auth-input"
-              value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
-              placeholder="Enter your username or email"
-            />
-          </label>
+          <div className="auth-field-group">
+            <label className="auth-label">Username or Email</label>
+            <div className="auth-input-wrapper">
+              <User className="input-icon" size={18} />
+              <input
+                className="auth-input"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
+                placeholder="Enter your identifier"
+                required
+              />
+            </div>
+          </div>
 
-          <label className="auth-field">
-            Password
-            <input
-              type="password"
-              className="auth-input"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-            />
-          </label>
+          <div className="auth-field-group">
+            <label className="auth-label">Password</label>
+            <div className="auth-input-wrapper">
+              <Lock className="input-icon" size={18} />
+              <input
+                type="password"
+                className="auth-input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+              />
+            </div>
+          </div>
 
-          <button type="submit" className="auth-button" disabled={loading}>
-            {loading ? 'Logging in...' : 'Continue'}
-          </button>
+          <motion.button 
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            type="submit" 
+            className="auth-button auth-button--primary" 
+            disabled={loading}
+          >
+            {loading ? 'Authenticating...' : (
+              <>
+                Continue to Dashboard
+                <ArrowRight size={18} />
+              </>
+            )}
+          </motion.button>
         </form>
 
         <div className="auth-footer">
-          New user?{' '}
+          <span>New to SIRP?</span>
           <button className="auth-link-button" type="button" onClick={() => navigate('/register')}>
-            Register here
+            Create an account
           </button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
+
 export default LoginPage;

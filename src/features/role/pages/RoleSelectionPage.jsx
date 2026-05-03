@@ -1,19 +1,23 @@
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '../../auth/auth.context.jsx';
 import * as authService from '../../auth/services/auth.service.jsx';
 import RoleCard from '../components/RoleCard.jsx';
 import { toast } from 'react-toastify';
+import { Shield, HardHat, Zap } from 'lucide-react';
 
 const roles = [
   {
     key: 'company_admin',
-    label: 'Company Admin (Leader)',
-    description: 'Register your company, manage infrastructure logs, and invite your engineering team.',
+    label: 'Company Admin',
+    description: 'Establish your command center, integrate log sources, and lead your response team.',
+    icon: <Shield size={32} />,
   },
   {
     key: 'engineer',
-    label: 'Engineer',
-    description: 'Monitor incidents, analyze logs, and collaborate on real-time resolution.',
+    label: 'Field Engineer',
+    description: 'Analyze real-time diagnostic reports, resolve incidents, and secure infrastructure.',
+    icon: <HardHat size={32} />,
   },
 ];
 
@@ -34,28 +38,42 @@ const RoleSelectionPage = () => {
   };
 
   return (
-    <div className="role-shell">
-      <div className="role-panel">
-        <div className="role-header">
-          <div>
-            <h1 className="role-title">Choose your role</h1>
-            <p className="role-subtitle">
-              Hi {user?.username || 'User'}, select the role you want to continue with.
-            </p>
-          </div>
+    <div className="auth-shell">
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="role-panel"
+      >
+        <div className="auth-brand">
+           <Zap className="brand-icon" size={32} />
+           <span className="brand-text">SIRP AI</span>
         </div>
 
-        <div className="role-grid">
-          {roles.map((role) => (
-            <RoleCard
+        <div className="role-header">
+            <h1 className="auth-title">Define Your Identity</h1>
+            <p className="auth-subtitle">
+              Hi <span className="auth-highlight">{user?.username}</span>, how will you contribute to the network today?
+            </p>
+        </div>
+
+        <div className="role-grid-2">
+          {roles.map((role, index) => (
+            <motion.div
               key={role.key}
-              title={role.label}
-              description={role.description}
-              onClick={() => handleRoleSelect(role.key)}
-            />
+              initial={{ opacity: 0, x: index === 0 ? -20 : 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 + index * 0.1 }}
+            >
+                <RoleCard
+                  title={role.label}
+                  description={role.description}
+                  icon={role.icon}
+                  onClick={() => handleRoleSelect(role.key)}
+                />
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

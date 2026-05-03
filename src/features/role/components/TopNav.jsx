@@ -1,36 +1,55 @@
 import React from 'react';
-import { FiSearch, FiBell, FiLogOut, FiUser } from 'react-icons/fi';
+import { motion } from 'framer-motion';
+import { Search, Bell, LogOut, User, Command } from 'lucide-react';
 
 const TopNav = ({ user, logout }) => {
   return (
     <header className="dashboard-topnav">
       <div className="search-bar">
-        <FiSearch className="search-icon" />
-        <input type="text" placeholder="Search incidents, logs, or team..." />
+        <Search className="search-icon" size={18} />
+        <input type="text" placeholder="Search command center (Ctrl + K)" />
+        <div className="command-hint">
+            <Command size={12} />
+            <span>K</span>
+        </div>
       </div>
       
       <div className="nav-right">
-        <button className="icon-btn">
-          <FiBell />
+        <motion.button 
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          className="icon-btn"
+        >
+          <Bell size={20} />
           <span className="notification-dot"></span>
-        </button>
+        </motion.button>
         
         <div className="profile-dropdown">
           <div className="profile-trigger">
             <div className="profile-info">
-              <p className="username">{user?.username}</p>
-              <p className="user-role">{user?.role === 'company_admin' ? 'Company Admin' : 'Field Engineer'}</p>
+              <p className="username">{user?.username || 'User Hub'}</p>
+              <p className="user-role">
+                {user?.role === 'company_admin' ? 'Company Admin' : 'Field Engineer'}
+              </p>
             </div>
-            <div className="avatar-circle">
-              <FiUser />
-            </div>
+            <motion.div 
+              whileHover={{ rotate: 10 }}
+              className="avatar-circle"
+            >
+              <User size={20} />
+            </motion.div>
           </div>
         </div>
 
-        <button className="logout-btn" onClick={logout} title="Logout">
-          <FiLogOut />
-          <span>Logout</span>
-        </button>
+        <motion.button 
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="logout-btn" 
+          onClick={logout}
+        >
+          <LogOut size={18} />
+          <span>Exit</span>
+        </motion.button>
       </div>
     </header>
   );

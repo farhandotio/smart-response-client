@@ -1,46 +1,99 @@
 import React from 'react';
-import { FiUsers, FiCpu, FiEye } from 'react-icons/fi';
+import { motion } from 'framer-motion';
+import { Users, Cpu, Eye, ShieldCheck, Zap, BarChart3 } from 'lucide-react';
 
 const Features = () => {
   const features = [
     {
-      icon: <FiUsers />,
-      title: 'Real-time Collaboration',
-      description: 'Live updates powered by Socket.io ensuring your team stays synchronized during critical events. See teammate actions instantly.'
+      icon: <Users />,
+      title: 'Tactical Collaboration',
+      description: 'Real-time synchronization for engineering teams. Coordinate responses with sub-second latency powered by Socket.io.'
     },
     {
-      icon: <FiCpu />,
-      title: 'AI-Driven Postmortems',
-      description: 'Automated root cause analysis using GPT-4 to generate detailed insights, timelines, and action items to prevent future downtime.'
+      icon: <Cpu />,
+      title: 'AI Diagnostic Engine',
+      description: 'Leverage Gemini 1.5 Pro to analyze logs instantly. Identify root causes and severity before your team even starts digging.'
     },
     {
-      icon: <FiEye />,
-      title: 'Public Transparency',
-      description: 'Integrated status pages that sync directly with your internal incidents. Build customer trust through proactive communication.'
+      icon: <Eye />,
+      title: 'Unified Monitoring',
+      description: 'Centralize logs from VPS, Cloud, or Serverless. One command center to monitor your entire infrastructure health.'
+    },
+    {
+      icon: <ShieldCheck />,
+      title: 'Enterprise Security',
+      description: 'End-to-end encryption for all log data. Built-in compliance tools and audit trails for every incident resolved.'
+    },
+    {
+      icon: <Zap />,
+      title: 'Automated Workflows',
+      description: 'Trigger automated postmortems and status updates. Reduce your MTTR by automating the repetitive response tasks.'
+    },
+    {
+      icon: <BarChart3 />,
+      title: 'System Intelligence',
+      description: 'Deep analytics on incident trends. Identify weak points in your infrastructure with AI-generated health reports.'
     }
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
   return (
-    <section className="features-section theme-light" id="features">
+    <section className="features-section" id="features">
       <div className="section-header">
-        <h2 className="theme-text-dark">Structured Curriculum Designed for <span className="text-gradient">Real Growth</span></h2>
-        <p className="theme-text-muted">Experience the future of incident management with our AI-driven platform designed for sub-second synchronization and deep insights.</p>
+        <motion.span 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          className="section-tag"
+        >
+          Core Capabilities
+        </motion.span>
+        <motion.h2 
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          className="section-title"
+        >
+          Engineered for <span className="text-gradient">High-Availability</span>
+        </motion.h2>
+        <p className="section-subtitle">
+          Everything you need to master infrastructure chaos and build 
+          unshakable trust with your customers.
+        </p>
       </div>
 
-      <div className="features-grid">
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        className="features-grid"
+      >
         {features.map((feature, index) => (
-          <div 
+          <motion.div 
             key={index} 
-            className="feature-card theme-card-light"
+            variants={itemVariants}
+            whileHover={{ y: -8 }}
+            className="feature-card-modern"
           >
-            <div className="icon-box theme-icon-accent">
+            <div className="icon-wrapper">
               {feature.icon}
             </div>
-            <h3 className="theme-text-dark">{feature.title}</h3>
-            <p className="theme-text-muted">{feature.description}</p>
-          </div>
+            <h3>{feature.title}</h3>
+            <p>{feature.description}</p>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 };
