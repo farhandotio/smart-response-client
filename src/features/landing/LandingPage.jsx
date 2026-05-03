@@ -5,31 +5,29 @@ import Hero from './components/Hero';
 import TrustedBy from './components/TrustedBy';
 import Features from './components/Features';
 import UnifiedCommand from './components/UnifiedCommand';
+import Pricing from './components/Pricing';
 import Footer from './components/Footer';
 import './styles/landing.scss';
 
 const LandingPage = () => {
   const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
+  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
 
   useEffect(() => {
-    document.title = "SIRP AI | Autonomous Incident Response";
+    document.title = 'SIRP AI | Autonomous Incident Response';
     window.scrollTo(0, 0);
   }, []);
 
   return (
-    <div className="landing-container">
-      <motion.div className="progress-bar" style={{ scaleX }} />
+    <div className="lp">
+      <motion.div className="pbar" style={{ scaleX }} />
       <Navbar />
       <main>
         <Hero />
         <TrustedBy />
         <Features />
         <UnifiedCommand />
+        <Pricing />
       </main>
       <Footer />
     </div>

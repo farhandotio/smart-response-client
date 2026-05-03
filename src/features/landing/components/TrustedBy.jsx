@@ -1,30 +1,48 @@
-import React from 'react';
+import { motion } from 'framer-motion';
 import { Shield, Cloud, Cpu, Zap, Activity } from 'lucide-react';
 
-const TrustedBy = () => {
-  const logos = [
-    { name: 'CYBERSEC', icon: <Shield size={18} /> },
-    { name: 'CLOUDOPS', icon: <Cloud size={18} /> },
-    { name: 'NEXUS', icon: <Cpu size={18} /> },
-    { name: 'VOLT', icon: <Zap size={18} /> },
-    { name: 'DATAFLOW', icon: <Activity size={18} /> },
-  ];
+const logos = [
+  { name: 'CYBERSEC', icon: <Shield size={14} /> },
+  { name: 'CLOUDOPS', icon: <Cloud size={14} /> },
+  { name: 'NEXUS', icon: <Cpu size={14} /> },
+  { name: 'VOLT', icon: <Zap size={14} /> },
+  { name: 'DATAFLOW', icon: <Activity size={14} /> },
+];
 
-  return (
-    <section className="trusted-by">
-      <div className="trusted-container">
-        <p className="trusted-label">Trusted by industry leaders in security & infrastructure</p>
-        <div className="logos-grid">
-          {logos.map((logo, index) => (
-            <div key={index} className="logo-item">
-              {logo.icon}
-              <span>{logo.name}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
+const TrustedBy = () => (
+  <section className="trusted">
+    <div className="trusted-inner">
+      <motion.p
+        className="trusted-label"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+      >
+        Trusted by security &amp; infrastructure leaders
+      </motion.p>
+      <motion.div
+        className="logos"
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ staggerChildren: 0.07 }}
+      >
+        {logos.map((l, i) => (
+          <motion.div
+            key={i}
+            className="logo-item"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 0.5 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.06 }}
+          >
+            {l.icon}
+            <span>{l.name}</span>
+          </motion.div>
+        ))}
+      </motion.div>
+    </div>
+  </section>
+);
 
 export default TrustedBy;
