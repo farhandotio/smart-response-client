@@ -19,8 +19,8 @@ const Hero = () => (
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.55, delay: 0.12 }}
       >
-        Smart Response monitors your entire infrastructure in real-time. Detect, diagnose, and
-        resolve anomalies before they impact your customers.
+        SIRP AI monitors your entire infrastructure in real-time. Detect, diagnose, and resolve
+        anomalies before they impact your customers.
       </motion.p>
 
       <motion.div

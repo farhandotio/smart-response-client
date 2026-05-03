@@ -25,7 +25,7 @@ const sections = [
     title: 'Integration Overview',
     icon: <Layers size={16} />,
     content:
-      'Smart Response monitors your application by fetching logs from a secure endpoint on your server. To enable AI-driven diagnostics, expose a structured JSON log file via a protected route that our system can access periodically.',
+      'SIRP AI monitors your application by fetching logs from a secure endpoint on your server. To enable AI-driven diagnostics, expose a structured JSON log file via a protected route that our system can access periodically.',
     type: 'text',
   },
   {
@@ -115,7 +115,7 @@ export default router;`,
     id: 'env',
     title: 'Finalizing Connection',
     icon: <Key size={16} />,
-    desc: 'After deploying your server, go to your Smart Response Dashboard and add your endpoint URL. Generate a strong secret for MONITOR_TOKEN.',
+    desc: 'After deploying your server, go to your SIRP AI Dashboard and add your endpoint URL. Generate a strong secret for MONITOR_TOKEN.',
     code: `MONITOR_TOKEN=generate_a_strong_secret_key`,
     lang: '.env',
     type: 'code',
@@ -178,7 +178,7 @@ const Docs = () => {
             {/* <div className="sb-mark">
               <Zap size={14} fill="var(--accent)" color="var(--accent)" />
             </div> */}
-            Smart<span className="acc">Response</span>
+            S<span className="acc">Response</span>
           </Link>
         </div>
 

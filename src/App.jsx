@@ -22,14 +22,50 @@ const RequireAuth = ({ children }) => {
   return user?.isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
+const PublicOnly = ({ children }) => {
+  const { user, isAuthReady } = useAuth();
+
+  if (!isAuthReady) {
+    return <div className="auth-loading">Loading...</div>;
+  }
+
+  return !user?.isAuthenticated ? children : <Navigate to="/dashboard" replace />;
+};
+
 const AuthApp = () => (
   <BrowserRouter>
     <Routes>
+      {/* Public Routes - Jara keu dekhbe */}
       <Route path="/" element={<LandingPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/verify-otp" element={<VerifyOtpPage />} />
       <Route path="/docs" element={<Docs />} />
+
+      {/* Guest Only Routes */}
+      <Route
+        path="/login"
+        element={
+          <PublicOnly>
+            <LoginPage />
+          </PublicOnly>
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          <PublicOnly>
+            <RegisterPage />
+          </PublicOnly>
+        }
+      />
+      <Route
+        path="/verify-otp"
+        element={
+          <PublicOnly>
+            <VerifyOtpPage />
+          </PublicOnly>
+        }
+      />
+
+      {/* Protected Routes */}
       <Route
         path="/select-role"
         element={
@@ -62,6 +98,7 @@ const AuthApp = () => (
           </RequireAuth>
         }
       />
+
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   </BrowserRouter>
@@ -70,18 +107,7 @@ const AuthApp = () => (
 const App = () => (
   <AuthProvider>
     <AuthApp />
-    <ToastContainer
-      position="top-right"
-      autoClose={3000}
-      hideProgressBar={false}
-      newestOnTop={false}
-      closeOnClick
-      rtl={false}
-      pauseOnFocusLoss
-      draggable
-      pauseOnHover
-      theme="dark"
-    />
+    <ToastContainer position="top-right" autoClose={3000} theme="dark" />
   </AuthProvider>
 );
 

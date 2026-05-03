@@ -421,6 +421,12 @@
   min-height: 260px;
 }
 
+.dashboard-incident-card {
+  display: grid;
+  gap: 1rem;
+  width: 100%;
+}
+
 .dashboard-status-card {
   padding: 1.5rem;
 }

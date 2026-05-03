@@ -30,7 +30,7 @@ const Navbar = () => {
             <Zap size={16} fill="var(--accent)" color="var(--accent)" />
           </div>
           <div className="logo-text max-md:hidden">
-            Smart <span className="text-accent">Response</span>
+            SIRP <span className="text-accent">AI</span>
           </div>
         </Link>
 

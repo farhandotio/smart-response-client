@@ -3,40 +3,56 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../auth/auth.context.jsx';
 import { useRoleActions } from '../hooks/useRoleActions.jsx';
 import { toast } from 'react-toastify';
+import { Upload } from 'lucide-react';
 
 const RoleCreationPage = () => {
   const navigate = useNavigate();
   const { role } = useParams();
   const { user } = useAuth();
-  const { createCompany, createEngineerProfile, getAllCompanies, loading } = useRoleActions();
+  const { createCompany, createEngineerProfile, loading } = useRoleActions();
 
   // Company Admin State
   const [companyName, setCompanyName] = useState('');
   const [companyDesc, setCompanyDesc] = useState('');
-  const [logSources, setLogSources] = useState([{ sourceName: '', logUrl: '', serviceType: 'backend' }]);
+  const [companyLogo, setCompanyLogo] = useState(null);
+  const [companyLogoPreview, setCompanyLogoPreview] = useState('');
+  const [logSources, setLogSources] = useState([
+    { sourceName: '', logUrl: '', serviceType: 'backend' },
+  ]);
 
   // Engineer State
   const [seniority, setSeniority] = useState('mid');
   const [expertise, setExpertise] = useState('');
   const [bio, setBio] = useState('');
-  const [companies, setCompanies] = useState([]);
-  const [selectedCompanyId, setSelectedCompanyId] = useState('');
+  const [image, setImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState('');
 
   useEffect(() => {
     if (!user?.isAuthenticated) {
       navigate('/login');
       return;
     }
-    if (role === 'engineer') {
-      const fetchCompanies = async () => {
-        const data = await getAllCompanies();
-        if (data?.companies) {
-          setCompanies(data.companies);
-        }
-      };
-      fetchCompanies();
+  }, [user, navigate, role]);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      const reader = new FileReader();
+      reader.onload = (e) => setPreviewImage(e.target.result);
+      reader.readAsDataURL(file);
     }
-  }, [user, navigate, role, getAllCompanies]);
+  };
+
+  const handleCompanyLogoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setCompanyLogo(file);
+      const reader = new FileReader();
+      reader.onload = (e) => setCompanyLogoPreview(e.target.result);
+      reader.readAsDataURL(file);
+    }
+  };
 
   const addLogSource = () => {
     setLogSources([...logSources, { sourceName: '', logUrl: '', serviceType: 'backend' }]);
@@ -48,6 +64,10 @@ const RoleCreationPage = () => {
     setLogSources(updated);
   };
 
+  const handleSkip = () => {
+    navigate('/dashboard');
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -56,16 +76,20 @@ const RoleCreationPage = () => {
         toast.error('Company name and description are required.');
         return;
       }
-      
-      const success = await createCompany({ 
-        name: companyName, 
-        description: companyDesc, 
-        logSources: logSources.filter(s => s.sourceName && s.logUrl) 
+
+      const success = await createCompany({
+        name: companyName,
+        description: companyDesc,
+        logSources: logSources.filter((s) => s.sourceName && s.logUrl),
+        image: companyLogo,
       });
       if (success) navigate('/dashboard');
     } else if (role === 'engineer') {
-      const expertiseArray = expertise.split(',').map(s => s.trim()).filter(Boolean);
-      
+      const expertiseArray = expertise
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+
       if (expertiseArray.length === 0) {
         toast.error('Please add at least one expertise (e.g. Node.js)');
         return;
@@ -75,16 +99,16 @@ const RoleCreationPage = () => {
         toast.error('Bio must be at least 10 characters long');
         return;
       }
-      
+
       const queryParams = new URLSearchParams(window.location.search);
       const inviteToken = queryParams.get('invite');
 
-      const success = await createEngineerProfile({ 
-        seniority, 
-        expertise: expertiseArray, 
-        bio, 
-        companyId: selectedCompanyId || undefined,
-        inviteToken: inviteToken || undefined
+      const success = await createEngineerProfile({
+        seniority,
+        expertise: expertiseArray,
+        bio,
+        image: image,
+        inviteToken: inviteToken || undefined,
       });
       if (success) navigate('/dashboard');
     }
@@ -98,8 +122,8 @@ const RoleCreationPage = () => {
       <div className="auth-card auth-card--wide">
         <h1 className="auth-title">{title}</h1>
         <p className="auth-subtitle">
-          {isCompanyAdmin 
-            ? 'Set up your workspace to start monitoring incidents and logs.' 
+          {isCompanyAdmin
+            ? 'Set up your workspace to start monitoring incidents and logs.'
             : 'Help your team know your expertise and availability.'}
         </p>
 
@@ -127,10 +151,87 @@ const RoleCreationPage = () => {
                 />
               </label>
 
+              <label className="auth-field">
+                Company Logo (Optional)
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: '1.5rem',
+                    alignItems: 'flex-start',
+                    marginTop: '0.75rem',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '100px',
+                      height: '100px',
+                      borderRadius: '8px',
+                      background: companyLogoPreview ? `url(${companyLogoPreview})` : 'var(--bg-1)',
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      border: '2px dashed var(--line-hi)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'var(--text-3)',
+                      fontSize: '2.5rem',
+                      flexShrink: 0,
+                    }}
+                  >
+                    {!companyLogoPreview && '🏢'}
+                  </div>
+                  <label
+                    style={{
+                      cursor: 'pointer',
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.5rem',
+                    }}
+                  >
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleCompanyLogoChange}
+                      style={{ display: 'none' }}
+                    />
+                    <div
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        padding: '0.75rem 1.5rem',
+                        background: 'var(--accent)',
+                        color: '#000',
+                        borderRadius: 'var(--r)',
+                        fontWeight: '600',
+                        width: 'fit-content',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <Upload size={18} />
+                      Choose Logo
+                    </div>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-3)' }}>
+                      JPG, PNG or GIF (max 5MB)
+                    </span>
+                  </label>
+                </div>
+              </label>
+
               <div className="log-sources-section">
                 <h3 style={{ margin: '1rem 0', color: '#fff' }}>Log Sources</h3>
                 {logSources.map((source, index) => (
-                  <div key={index} className="log-source-row" style={{ marginBottom: '1rem', padding: '1rem', background: '#1a1a1a', borderRadius: '8px' }}>
+                  <div
+                    key={index}
+                    className="log-source-row"
+                    style={{
+                      marginBottom: '1rem',
+                      padding: '1rem',
+                      background: '#1a1a1a',
+                      borderRadius: '8px',
+                    }}
+                  >
                     <input
                       className="auth-input"
                       value={source.sourceName}
@@ -156,28 +257,80 @@ const RoleCreationPage = () => {
                     </select>
                   </div>
                 ))}
-                <button type="button" onClick={addLogSource} className="auth-link-button">
+                <button type="button" onClick={addLogSource} className="bg-transparent border border-dashed border-gray-600 text-gray-400 px-4 py-2 rounded hover:bg-gray-700 transition-colors">
                   + Add Another Source
                 </button>
               </div>
             </>
           ) : (
             <>
-              {!new URLSearchParams(window.location.search).get('invite') && (
-                <label className="auth-field">
-                  Select Workspace (Optional)
-                  <select
-                    className="auth-input"
-                    value={selectedCompanyId}
-                    onChange={(e) => setSelectedCompanyId(e.target.value)}
+              <label className="auth-field">
+                Profile Picture (Optional)
+                <div
+                  style={{
+                    display: 'flex',
+                    gap: '1.5rem',
+                    alignItems: 'flex-start',
+                    marginTop: '0.75rem',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '100px',
+                      height: '100px',
+                      borderRadius: '8px',
+                      background: previewImage ? `url(${previewImage})` : 'var(--bg-1)',
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      border: '2px dashed var(--line-hi)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'var(--text-3)',
+                      fontSize: '2.5rem',
+                      flexShrink: 0,
+                    }}
                   >
-                    <option value="">-- Choose a Workspace --</option>
-                    {companies.map(c => (
-                      <option key={c._id} value={c._id}>{c.name}</option>
-                    ))}
-                  </select>
-                </label>
-              )}
+                    {!previewImage && '📷'}
+                  </div>
+                  <label
+                    style={{
+                      cursor: 'pointer',
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.5rem',
+                    }}
+                  >
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      style={{ display: 'none' }}
+                    />
+                    <div
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        padding: '0.75rem 1.5rem',
+                        background: 'var(--accent)',
+                        color: '#000',
+                        borderRadius: 'var(--r)',
+                        fontWeight: '600',
+                        width: 'fit-content',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <Upload size={18} />
+                      Choose Image
+                    </div>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-3)' }}>
+                      JPG, PNG or GIF (max 5MB)
+                    </span>
+                  </label>
+                </div>
+              </label>
 
               <label className="auth-field">
                 Seniority
@@ -204,20 +357,36 @@ const RoleCreationPage = () => {
               </label>
 
               <label className="auth-field">
-                Bio
+                Bio (Optional)
                 <textarea
                   className="auth-input"
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
                   placeholder="Tell us about yourself"
+                  style={{ minHeight: '100px' }}
                 />
               </label>
             </>
           )}
 
-          <button type="submit" className="auth-button auth-button--primary" disabled={loading} style={{ marginTop: '2rem' }}>
-            {loading ? 'Processing...' : 'Complete Setup'}
-          </button>
+          <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
+            <button
+              type="button"
+              onClick={handleSkip}
+              className="auth-button auth-button--secondary"
+              style={{ flex: 1 }}
+            >
+              Skip for Now
+            </button>
+            <button
+              type="submit"
+              className="auth-button auth-button--primary"
+              disabled={loading}
+              style={{ flex: 1 }}
+            >
+              {loading ? 'Processing...' : 'Complete Setup'}
+            </button>
+          </div>
         </form>
       </div>
     </div>
