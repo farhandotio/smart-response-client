@@ -8,7 +8,7 @@ const RoleCreationPage = () => {
   const navigate = useNavigate();
   const { role } = useParams();
   const { user } = useAuth();
-  const { createCompany, createEngineerProfile, loading } = useRoleActions();
+  const { createCompany, createEngineerProfile, getAllCompanies, loading } = useRoleActions();
 
   // Company Admin State
   const [companyName, setCompanyName] = useState('');
@@ -19,13 +19,24 @@ const RoleCreationPage = () => {
   const [seniority, setSeniority] = useState('mid');
   const [expertise, setExpertise] = useState('');
   const [bio, setBio] = useState('');
+  const [companies, setCompanies] = useState([]);
+  const [selectedCompanyId, setSelectedCompanyId] = useState('');
 
   useEffect(() => {
     if (!user?.isAuthenticated) {
       navigate('/login');
       return;
     }
-  }, [user, navigate]);
+    if (role === 'engineer') {
+      const fetchCompanies = async () => {
+        const data = await getAllCompanies();
+        if (data?.companies) {
+          setCompanies(data.companies);
+        }
+      };
+      fetchCompanies();
+    }
+  }, [user, navigate, role, getAllCompanies]);
 
   const addLogSource = () => {
     setLogSources([...logSources, { sourceName: '', logUrl: '', serviceType: 'backend' }]);
@@ -60,12 +71,21 @@ const RoleCreationPage = () => {
         return;
       }
 
-      if (bio && bio.length < 10) {
+      if (bio && bio.length > 0 && bio.length < 10) {
         toast.error('Bio must be at least 10 characters long');
         return;
       }
+      
+      const queryParams = new URLSearchParams(window.location.search);
+      const inviteToken = queryParams.get('invite');
 
-      const success = await createEngineerProfile({ seniority, expertise: expertiseArray, bio });
+      const success = await createEngineerProfile({ 
+        seniority, 
+        expertise: expertiseArray, 
+        bio, 
+        companyId: selectedCompanyId || undefined,
+        inviteToken: inviteToken || undefined
+      });
       if (success) navigate('/dashboard');
     }
   };
@@ -143,6 +163,22 @@ const RoleCreationPage = () => {
             </>
           ) : (
             <>
+              {!new URLSearchParams(window.location.search).get('invite') && (
+                <label className="auth-field">
+                  Select Workspace (Optional)
+                  <select
+                    className="auth-input"
+                    value={selectedCompanyId}
+                    onChange={(e) => setSelectedCompanyId(e.target.value)}
+                  >
+                    <option value="">-- Choose a Workspace --</option>
+                    {companies.map(c => (
+                      <option key={c._id} value={c._id}>{c.name}</option>
+                    ))}
+                  </select>
+                </label>
+              )}
+
               <label className="auth-field">
                 Seniority
                 <select
