@@ -79,3 +79,77 @@ export const acceptInvitation = async (inviteId) => {
     handleError(error);
   }
 };
+
+export const getAllCompanies = async () => {
+  try {
+    const response = await api.get('/api/company/list/all');
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const updateCompany = async (data) => {
+  try {
+    const isFormData = data instanceof FormData;
+    const response = await api.patch('/api/company/update', data, {
+      headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : { 'Content-Type': 'application/json' },
+    });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const kickMember = async (engineerId) => {
+  try {
+    const response = await api.delete(`/api/company/member/${engineerId}`);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const getIncidents = async (params = {}) => {
+  try {
+    const response = await api.get('/api/incidents/all', { params });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+export const updateIncidentStatus = async (id, status, resolutionSummary) => {
+  try {
+    const response = await api.patch(`/api/incidents/${id}/status`, { status, resolutionSummary });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const triggerManualScan = async () => {
+  try {
+    const response = await api.get('/api/incidents/monitor-all');
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const assignEngineer = async (id, engineerId) => {
+  try {
+    const response = await api.post(`/api/incidents/${id}/assign`, { engineerId });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const unassignEngineer = async (id, engineerId) => {
+  try {
+    const response = await api.post(`/api/incidents/${id}/unassign`, { engineerId });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};

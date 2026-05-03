@@ -7,10 +7,14 @@ import {
   Settings, 
   Briefcase, 
   Zap,
-  ShieldCheck
+  ShieldCheck,
+  Activity,
+  X
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-const Sidebar = ({ role, activeTab, setActiveTab }) => {
+const Sidebar = ({ role, activeTab, setActiveTab, isOpen, setIsOpen }) => {
+  const navigate = useNavigate();
   const isAdmin = role === 'company_admin';
 
   const menuItems = [
@@ -22,17 +26,32 @@ const Sidebar = ({ role, activeTab, setActiveTab }) => {
   ];
 
   return (
-    <aside className="dashboard-sidebar">
-      <div className="sidebar-brand">
-        <motion.div 
-          initial={{ rotate: -20 }}
-          animate={{ rotate: 0 }}
-          className="logo-icon-wrapper"
-        >
-          <Zap size={24} fill="var(--accent)" color="var(--accent)" />
-        </motion.div>
-        <span className="logo-text">SIRP <span style={{ color: 'var(--accent)' }}>AI</span></span>
-      </div>
+    <>
+      {isOpen && (
+        <div 
+          className="sidebar-overlay" 
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+      <aside className={`dashboard-sidebar ${isOpen ? 'sidebar-open' : ''}`}>
+        <div className="sidebar-brand">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <motion.div 
+              initial={{ rotate: -20 }}
+              animate={{ rotate: 0 }}
+              className="logo-icon-wrapper"
+            >
+              <Zap size={24} fill="var(--accent)" color="var(--accent)" />
+            </motion.div>
+            <span className="logo-text">SIRP <span style={{ color: 'var(--accent)' }}>AI</span></span>
+          </div>
+          <button 
+            className="mobile-close-btn"
+            onClick={() => setIsOpen(false)}
+          >
+            <X size={24} />
+          </button>
+        </div>
       
       <nav className="sidebar-nav">
         {menuItems.map((item) => (
@@ -41,7 +60,14 @@ const Sidebar = ({ role, activeTab, setActiveTab }) => {
             whileHover={{ x: 5 }}
             whileTap={{ scale: 0.98 }}
             className={`nav-item ${activeTab === item.id ? 'nav-item--active' : ''}`}
-            onClick={() => setActiveTab(item.id)}
+            onClick={() => {
+              if (item.id === 'analytics') {
+                navigate(isAdmin ? '/dashboard/company' : '/dashboard/engineer');
+              } else {
+                setActiveTab(item.id);
+              }
+              if (window.innerWidth < 1024) setIsOpen(false);
+            }}
             style={{ position: 'relative' }}
           >
             <span className="nav-icon">{item.icon}</span>
@@ -64,6 +90,7 @@ const Sidebar = ({ role, activeTab, setActiveTab }) => {
         </div>
       </div>
     </aside>
+    </>
   );
 };
 

@@ -135,6 +135,73 @@ export const useRoleActions = () => {
       setLoading(false);
     }
   }, []);
+  const getAllCompanies = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await roleService.getAllCompanies();
+      return data;
+    } catch (error) {
+      toast.error(error.message);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const updateCompany = useCallback(async (payload) => {
+    setLoading(true);
+    try {
+      const data = await roleService.updateCompany(payload);
+      toast.success('Workspace updated successfully!');
+      return data;
+    } catch (error) {
+      toast.error(error.message);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const kickMember = useCallback(async (engineerId) => {
+    setLoading(true);
+    try {
+      const data = await roleService.kickMember(engineerId);
+      toast.success(data.message || 'Member removed successfully!');
+      return data;
+    } catch (error) {
+      toast.error(error.message);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const updateIncidentStatus = useCallback(async (id, status, resolutionSummary) => {
+    setLoading(true);
+    try {
+      const data = await roleService.updateIncidentStatus(id, status, resolutionSummary);
+      toast.success('Incident status updated!');
+      return data;
+    } catch (error) {
+      toast.error(error.message);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const getIncidents = useCallback(async (params) => {
+    setLoading(true);
+    try {
+      const data = await roleService.getIncidents(params);
+      return data;
+    } catch (error) {
+      toast.error(error.message);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   return {
     loadMe,
@@ -144,6 +211,50 @@ export const useRoleActions = () => {
     getWorkspaceData,
     getInvitations,
     acceptInvitation,
+    getAllCompanies,
+    updateCompany,
+    kickMember,
+    getIncidents,
+    updateIncidentStatus,
+    triggerManualScan: useCallback(async () => {
+      setLoading(true);
+      try {
+        await roleService.triggerManualScan();
+        toast.success('Manual log scan completed!');
+        return true;
+      } catch (error) {
+        toast.error(error.message);
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    }, []),
+    assignEngineer: useCallback(async (id, engineerId) => {
+      setLoading(true);
+      try {
+        await roleService.assignEngineer(id, engineerId);
+        toast.success('Incident assigned successfully!');
+        return true;
+      } catch (error) {
+        toast.error(error.message);
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    }, []),
+    unassignEngineer: useCallback(async (id, engineerId) => {
+      setLoading(true);
+      try {
+        await roleService.unassignEngineer(id, engineerId);
+        toast.success('Engineer removed from task!');
+        return true;
+      } catch (error) {
+        toast.error(error.message);
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    }, []),
     loading,
   };
 };
