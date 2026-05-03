@@ -10,7 +10,7 @@ const Footer = () => (
           <div className="fmark">
             <Zap size={14} fill="var(--accent)" color="var(--accent)" />
           </div>
-          Smart<span>Response</span>
+          SIRP<span>AI</span>
         </Link>
         <p>
           The world's most advanced autonomous incident response engine. Empowering engineering
@@ -74,7 +74,7 @@ const Footer = () => (
     </div>
 
     <div className="footer-btm">
-      <span className='text'>© 2026 Smart Incident Response Platform. All rights reserved.</span>
+      <span className='text'>© 2026 SIRP AI. All rights reserved.</span>
       <div className="status">
         <div className="pulse" />
         Systems Operational

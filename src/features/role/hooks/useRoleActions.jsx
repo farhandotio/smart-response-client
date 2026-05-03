@@ -79,22 +79,19 @@ export const useRoleActions = () => {
     [loadMe]
   );
 
-  const inviteMember = useCallback(
-    async (email) => {
-      setLoading(true);
-      try {
-        const data = await roleService.inviteEngineer(email);
-        toast.success(data.message || 'Invitation sent successfully!');
-        return true;
-      } catch (error) {
-        toast.error(error.message);
-        return false;
-      } finally {
-        setLoading(false);
-      }
-    },
-    []
-  );
+  const inviteMember = useCallback(async (email) => {
+    setLoading(true);
+    try {
+      const data = await roleService.inviteEngineer(email);
+      toast.success(data.message || 'Invitation sent successfully!');
+      return true;
+    } catch (error) {
+      toast.error(error.message);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   const getWorkspaceData = useCallback(async () => {
     setLoading(true);
@@ -121,6 +118,30 @@ export const useRoleActions = () => {
       setLoading(false);
     }
   }, []);
+
+  const updateProfile = useCallback(
+    async (payload) => {
+      setLoading(true);
+      try {
+        const formData = new FormData();
+        if (payload.bio) formData.append('bio', payload.bio);
+        if (payload.seniority) formData.append('seniority', payload.seniority);
+        if (payload.expertise) formData.append('expertise', JSON.stringify(payload.expertise));
+        if (payload.image) formData.append('image', payload.image);
+
+        const data = await roleService.updateProfile(formData);
+        await loadMe();
+        toast.success('Profile updated successfully!');
+        return true;
+      } catch (error) {
+        toast.error(error.message);
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [loadMe]
+  );
 
   const acceptInvitation = useCallback(async (inviteId) => {
     setLoading(true);
@@ -213,6 +234,7 @@ export const useRoleActions = () => {
     acceptInvitation,
     getAllCompanies,
     updateCompany,
+    updateProfile,
     kickMember,
     getIncidents,
     updateIncidentStatus,

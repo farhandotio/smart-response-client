@@ -11,7 +11,7 @@ import {
   Activity,
   X
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ role, activeTab, setActiveTab, isOpen, setIsOpen }) => {
   const navigate = useNavigate();
@@ -22,7 +22,6 @@ const Sidebar = ({ role, activeTab, setActiveTab, isOpen, setIsOpen }) => {
     { id: 'incidents', label: 'Incidents', icon: <AlertCircle size={20} /> },
     { id: 'team', label: isAdmin ? 'Team Management' : 'My Team', icon: <Users size={20} /> },
     { id: 'workspace', label: 'Workspace', icon: <Briefcase size={20} /> },
-    { id: 'settings', label: 'Settings', icon: <Settings size={20} /> },
   ];
 
   return (
@@ -35,7 +34,7 @@ const Sidebar = ({ role, activeTab, setActiveTab, isOpen, setIsOpen }) => {
       )}
       <aside className={`dashboard-sidebar ${isOpen ? 'sidebar-open' : ''}`}>
         <div className="sidebar-brand">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '1rem', textDecoration: 'none', color: 'inherit' }}>
             <motion.div 
               initial={{ rotate: -20 }}
               animate={{ rotate: 0 }}
@@ -44,7 +43,7 @@ const Sidebar = ({ role, activeTab, setActiveTab, isOpen, setIsOpen }) => {
               <Zap size={24} fill="var(--accent)" color="var(--accent)" />
             </motion.div>
             <span className="logo-text">SIRP <span style={{ color: 'var(--accent)' }}>AI</span></span>
-          </div>
+          </Link>
           <button 
             className="mobile-close-btn"
             onClick={() => setIsOpen(false)}
@@ -82,13 +81,6 @@ const Sidebar = ({ role, activeTab, setActiveTab, isOpen, setIsOpen }) => {
           </motion.button>
         ))}
       </nav>
-
-      <div className="sidebar-footer">
-        <div className="security-badge">
-          <ShieldCheck size={14} />
-          <span>System Secure</span>
-        </div>
-      </div>
     </aside>
     </>
   );

@@ -93,7 +93,9 @@ export const updateCompany = async (data) => {
   try {
     const isFormData = data instanceof FormData;
     const response = await api.patch('/api/company/update', data, {
-      headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : { 'Content-Type': 'application/json' },
+      headers: isFormData
+        ? { 'Content-Type': 'multipart/form-data' }
+        : { 'Content-Type': 'application/json' },
     });
     return response.data;
   } catch (error) {
@@ -148,6 +150,17 @@ export const assignEngineer = async (id, engineerId) => {
 export const unassignEngineer = async (id, engineerId) => {
   try {
     const response = await api.post(`/api/incidents/${id}/unassign`, { engineerId });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const updateProfile = async (formData) => {
+  try {
+    const response = await api.put('/api/profile/update', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
     return response.data;
   } catch (error) {
     handleError(error);
